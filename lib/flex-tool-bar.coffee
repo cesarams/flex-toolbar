@@ -6,6 +6,10 @@ module.exports =
   configFilePath: null
   currentGrammar: null
 
+  watchList: []
+
+  counter: 0
+
   config:
     toolBarConfigurationFilePath:
       type: 'string'
@@ -33,6 +37,41 @@ module.exports =
     atom.workspace.onDidChangeActivePaneItem (item) =>
       if @storeGrammar()
         @reloadToolbar true
+
+    ###
+    atom.commands.onWillDispatch (e) =>
+      @counter += 1
+      console.log @counter
+      {$} = require 'space-pen'
+      for v in @watchList
+        if $(v.selector).length
+          v.button.removeClass "icon-#{v.oldIcon}"
+          v.button.addClass "icon-#{v.newIcon}"
+        else
+          v.button.removeClass "icon-#{v.newIcon}"
+          v.button.addClass "icon-#{v.oldIcon}"
+    ###
+
+    setInterval =>
+      @counter += 1
+      console.log @counter
+      {$} = require 'space-pen'
+      for v in @watchList
+        if $(v.selector).length
+          if !v.previous
+            v.button.removeClass "icon-#{v.oldIcon}"
+            v.button.addClass "icon-#{v.newIcon}"
+            v.previous = true
+        else
+          if v.previous
+            v.button.removeClass "icon-#{v.newIcon}"
+            v.button.addClass "icon-#{v.oldIcon}"
+            v.previous = false
+    , 100
+
+  watchElem: (selector, button, oldIcon, newIcon) ->
+    previous = false
+    @watchList.push { selector, button, oldIcon, newIcon, previous}
 
   consumeToolBar: (toolBar) ->
     @toolBar = toolBar 'flex-toolBar'
@@ -86,6 +125,9 @@ module.exports =
 
         if ( btn.disable? && @grammarCondition(btn.disable) ) or ( btn.enable? && !@grammarCondition(btn.enable) )
           button.setEnabled false
+
+        if btn.toggle
+          @watchElem btn.toggle.selector, button, btn.icon, btn.toggle.icon
 
   toolBar_addButton: (btn) ->
     if Array.isArray btn.callback

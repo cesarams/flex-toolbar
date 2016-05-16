@@ -1,6 +1,6 @@
 {
   "name": "flex-tool-bar",
-  "main": "./lib/flex-tool-bar",
+  "main": "./lib/main",
   "version": "0.10.0",
   "description": "Easily Customizable ToolBar for Atom",
   "repository": "https://github.com/cakecatz/flex-toolbar",
@@ -15,9 +15,9 @@
   "dependencies": {
     "atom-package-deps": "^4.0.1",
     "chokidar": "^1.4.3",
-    "cson": "^3.0.2",
     "fs-plus": "^2.8.1",
     "json5": "^0.5.0",
+    "season": "^5.3.0",
     "space-pen": "^5.1.1",
     "tree-match-sync": "0.0.2"
   },
@@ -27,7 +27,7 @@
   "consumedServices": {
     "tool-bar": {
       "versions": {
-        "^0.1.0": "consumeToolBar"
+        "^1.0.0": "consumeToolBar"
       }
     }
   },
